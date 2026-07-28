@@ -51,7 +51,16 @@ gcc -o LostCult LostCult.c
 
 (Requires the `*.txt` files to sit next to the executable.)
 
-## Credits
+## Authors
 
-Game and ASCII art by the original author. There's an easter egg hidden in one
-of the ASCII files. 👀
+Made by:
+
+- **Jackie Camacho**
+- **David Riego**
+- **Ileana Bernabe**
+- **Qarlo Banguilan**
+
+Created as the final project for **Computer Programming 1 — Fundamentals of C**.
+
+Game writing and ASCII art by the team. There's an easter egg hidden in one of
+the ASCII files. 👀
