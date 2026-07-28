@@ -52,15 +52,25 @@ static void em_system(const char *cmd) {
   }
 }
 
-/* scanf("%d") replacement: skip leading whitespace, read an integer,
-   and leave the terminating character in the stream (matches libc so
-   that the game's follow-up getchar() calls still consume the newline). */
+/* scanf("%d") replacement with input validation.
+   Skips leading whitespace, then:
+     - on a valid integer: returns it and leaves the terminating character
+       in the stream (matches libc, so follow-up getchar() calls still eat
+       the newline);
+     - on non-numeric input (e.g. a letter): discards the rest of that line
+       and returns -1. Because every numeric prompt in the game rejects -1
+       (the menu prints "Invalid Input"; the minigames re-ask), this turns a
+       stray letter into a clean re-prompt instead of an infinite loop. */
 static int em_read_int(void) {
   int c;
   do { c = em_input_getchar(); } while (c==' '||c=='\n'||c=='\r'||c=='\t');
   int neg = 0;
   if (c == '-') { neg = 1; c = em_input_getchar(); }
   else if (c == '+') { c = em_input_getchar(); }
+  if (!(c >= '0' && c <= '9')) {          /* not a number */
+    while (c != -1 && c != '\n') c = em_input_getchar();  /* flush the bad line */
+    return -1;
+  }
   int val = 0;
   while (c >= '0' && c <= '9') { val = val*10 + (c-'0'); c = em_input_getchar(); }
   em_unget_char(c);
