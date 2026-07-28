@@ -1369,7 +1369,7 @@ char *cards_name[] = {"The Plant", "The Spider",  "The Bat",
   int total_deck = 6; // Deck counter (if index deleter will be used)
   int card_play;      // card played by player
   int player_score = 0, ghost_score = 0; //
-  int card_check[3];
+  int card_check[3] = {-1, -1, -1}; // -1 = not yet played (avoids matching a real card 1-3)
 
   cardgame_ascii();
 
@@ -1514,12 +1514,15 @@ char *cards_name[] = {"The Plant", "The Spider",  "The Bat",
     }
 
     card_check[x] = card_play;
-    
-    if (card_check[0] == card_check[1] // DUPLICATE CHECKER
-        || card_check[1] == card_check[0] 
-        || card_check[1] == card_check[2])
+
+    int already_used = 0;            // DUPLICATE CHECKER: compare against earlier picks only
+    for (int j = 0; j < x; j++) {
+        if (card_check[j] == card_play) already_used = 1;
+    }
+    if (already_used)
       {
         printf("\n\nAlready used that. Pick a different card.\n");
+        card_check[x] = -1;          // undo this pick so the slot stays free
         getchar();
         press_enter();
         continue;
