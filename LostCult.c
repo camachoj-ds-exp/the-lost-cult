@@ -925,7 +925,7 @@ void password_game(){
 
     { //prints title ascii art
         FILE *title = fopen("password_title.txt", "r");
-        char buffer[100];
+        char buffer[255]; // sized to match fgets(..., 255, ...)
         if (title == NULL) {
             printf("Unable to open file!\n");
         }
@@ -1128,7 +1128,7 @@ void password_game(){
                 strcat(file, num);
                 strcat(file, ".txt");
                 FILE *kick = fopen(file, "r");
-                char buffer[100];
+                char buffer[255]; // sized to match fgets(..., 255, ...)
 
 
                 if (kick == NULL) {
@@ -1199,7 +1199,7 @@ void password_game(){
  
         { //prints win ascii art
             FILE *win = fopen("win.txt", "r");
-            char buffer[100];
+            char buffer[255]; // sized to match fgets(..., 255, ...)
             if (win == NULL) {
                 printf("Unable to open file!\n");
             }
@@ -1228,7 +1228,7 @@ void password_game(){
        
         { //prints lose ascii art
             FILE *lose = fopen("lose.txt", "r");
-            char buffer[100];
+            char buffer[255]; // sized to match fgets(..., 255, ...)
             if (lose == NULL) {
                 printf("Unable to open file!\n");
             }
