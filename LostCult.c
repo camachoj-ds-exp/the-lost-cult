@@ -910,7 +910,7 @@ void burger_game(){
 
 void password_game(){
   char guess[50], correctguess[10] = "*M****A*";
-    int status = 1, rooms = 8, guessalpha, guesscheck, hold = 0, distance = (rooms + (life - 3)); // rooms up to 8
+    int status = 1, rooms = 8, guessalpha = 0, guesscheck = 0, hold = 0, distance = (rooms + (life - 3)); // rooms up to 8
 
     //lock ascii art
     char locktop[12][25] = {"\n\t   .-------.", "\n\t  / .-----. \\", "\n\t ( (       ) )", "\n\t | |       | |", "\n\t | |       | |", "\n\t | |       | |", "\n\t | |       | |", "\n\t | |       | |", "\n\t | |       | |", "\n\t.|_|-'''''-|_|.", "\n       /               \\", "\n      |'\t       '|"};
@@ -1053,7 +1053,7 @@ void password_game(){
                 strcpy(guess, "wrong");
             }
 
-            for (int i = 0; i <= strlen(guess) - 1; i++) {
+            for (int i = 0; i < (int)strlen(guess); i++) {
                 guess[i] = toupper(guess[i]); //makes characters of the guess uppercase
                 if (isalpha(guess[i]) == 0) { //checks if input contains numbers and symbols and breaks if loop if it does
                     guessalpha = 0;
@@ -1118,7 +1118,7 @@ void password_game(){
 
 
             for (int i = 1; i <= 3; i++){ //loop to print ascii animation
-                char file[50] = "", num[1] = "";
+                char file[50] = "", num[12] = ""; // num must hold the digit AND its null terminator
                 system("cls");
 
 
