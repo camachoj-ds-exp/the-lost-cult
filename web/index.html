@@ -135,26 +135,14 @@
       }
     }
 
-    function feedChar(code) {
-      if (keyResolver) { const r = keyResolver; keyResolver = null; r(code); }
-      else if (lineResolver) { editLine(code); }
-      else { typeahead.push(code); }
-    }
-
     term.onData(function (data) {
-      for (let i = 0; i < data.length; i++) feedChar(data.charCodeAt(i));
-    });
-
-    // Small debug handle (harmless): read the screen / inject input from the console.
-    window.LostCult = {
-      term: term,
-      feed: function (s) { for (let i = 0; i < s.length; i++) feedChar(s.charCodeAt(i)); },
-      screen: function () {
-        const b = term.buffer.active, out = [];
-        for (let y = 0; y < b.length; y++) out.push(b.getLine(y).translateToString(true));
-        return out.join("\n").replace(/\n+$/, "");
+      for (let i = 0; i < data.length; i++) {
+        const code = data.charCodeAt(i);
+        if (keyResolver) { const r = keyResolver; keyResolver = null; r(code); }
+        else if (lineResolver) { editLine(code); }
+        else { typeahead.push(code); }
       }
-    };
+    });
 
     function startLine() {
       return new Promise(function (resolve) {
