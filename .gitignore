@@ -1,0 +1,15 @@
+# Build output
+/build/
+/assets/
+web/*.js
+web/*.wasm
+web/*.data
+
+# Native build artifacts
+*.exe
+*.o
+*.out
+
+# OS cruft
+.DS_Store
+Thumbs.db

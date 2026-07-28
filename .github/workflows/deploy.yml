@@ -1,0 +1,71 @@
+name: Build & Deploy (WebAssembly)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+# Allow the workflow to publish to GitHub Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one concurrent deployment.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 3.1.61
+          actions-cache-folder: emsdk-cache
+
+      - name: Assemble game assets
+        run: |
+          mkdir -p build assets
+          # The game opens its .txt art files from the current directory at
+          # runtime; preload them into the WASM virtual filesystem root.
+          cp *.txt assets/
+
+      - name: Compile C to WebAssembly
+        run: |
+          emcc web/LostCult_web.c -O2 \
+            -sASYNCIFY \
+            -sASYNCIFY_STACK_SIZE=131072 \
+            -sALLOW_MEMORY_GROWTH=1 \
+            -sFORCE_FILESYSTEM=1 \
+            -sINVOKE_RUN=0 \
+            -sEXIT_RUNTIME=1 \
+            -sEXPORTED_RUNTIME_METHODS=callMain,FS \
+            --preload-file assets@/ \
+            -o build/game.js
+
+      - name: Add page shell
+        run: |
+          cp web/index.html build/index.html
+          touch build/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
